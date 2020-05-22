@@ -1,0 +1,13 @@
+output: models
+wipe: true
+
+psql:
+  dbname: gqlboil
+  host: localhost
+  port: 5432
+  user: postgres
+  pass: password
+  schema: gqlboil
+  sslmode: disable
+  blacklist:
+  - migrations

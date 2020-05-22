@@ -1,0 +1,300 @@
+directive @isAuthenticated on FIELD_DEFINITION
+
+type Pet {
+  id: ID!
+  owner: User
+  name: String
+  breed: String
+  createdAt: Int
+  updatedAt: Int
+  deletedAt: Int
+  toys: [Toy]
+}
+
+type Toy {
+  id: ID!
+  description: String!
+  color: String
+  pet: Pet
+  createdAt: Int
+  deletedAt: Int
+  updatedAt: Int
+}
+
+type User {
+  id: ID!
+  email: String!
+  name: String
+  password: String!
+  deletedAt: Int
+  createdAt: Int
+  updatedAt: Int
+  ownerPets: [Pet]
+}
+
+input IDFilter {
+  equalTo: ID
+  notEqualTo: ID
+  in: [ID!]
+  notIn: [ID!]
+}
+
+input StringFilter {
+  equalTo: String
+  notEqualTo: String
+
+  in: [String!]
+  notIn: [String!]
+
+  startWith: String
+  notStartWith: String
+
+  endWith: String
+  notEndWith: String
+
+  contain: String
+  notContain: String
+
+  startWithStrict: String # Camel sensitive
+  notStartWithStrict: String # Camel sensitive
+  endWithStrict: String # Camel sensitive
+  notEndWithStrict: String # Camel sensitive
+  containStrict: String # Camel sensitive
+  notContainStrict: String # Camel sensitive
+}
+
+input IntFilter {
+  equalTo: Int
+  notEqualTo: Int
+  lessThan: Int
+  lessThanOrEqualTo: Int
+  moreThan: Int
+  moreThanOrEqualTo: Int
+  in: [Int!]
+  notIn: [Int!]
+}
+
+input FloatFilter {
+  equalTo: Float
+  notEqualTo: Float
+  lessThan: Float
+  lessThanOrEqualTo: Float
+  moreThan: Float
+  moreThanOrEqualTo: Float
+  in: [Float!]
+  notIn: [Float!]
+}
+
+input BooleanFilter {
+  equalTo: Boolean
+  notEqualTo: Boolean
+}
+
+input PetFilter {
+  search: String
+  where: PetWhere
+}
+
+input PetWhere {
+  id: IDFilter
+  owner: UserWhere
+  name: StringFilter
+  breed: StringFilter
+  createdAt: IntFilter
+  updatedAt: IntFilter
+  deletedAt: IntFilter
+  toys: ToyWhere
+  or: PetWhere
+  and: PetWhere
+}
+
+input ToyFilter {
+  search: String
+  where: ToyWhere
+}
+
+input ToyWhere {
+  id: IDFilter
+  description: StringFilter
+  color: StringFilter
+  pet: PetWhere
+  createdAt: IntFilter
+  deletedAt: IntFilter
+  updatedAt: IntFilter
+  or: ToyWhere
+  and: ToyWhere
+}
+
+input UserFilter {
+  search: String
+  where: UserWhere
+}
+
+input UserWhere {
+  id: IDFilter
+  email: StringFilter
+  name: StringFilter
+  password: StringFilter
+  deletedAt: IntFilter
+  createdAt: IntFilter
+  updatedAt: IntFilter
+  ownerPets: PetWhere
+  or: UserWhere
+  and: UserWhere
+}
+
+type Query {
+  pet(id: ID!): Pet! @isAuthenticated
+  pets(filter: PetFilter): [Pet!]! @isAuthenticated
+  toy(id: ID!): Toy! @isAuthenticated
+  toys(filter: ToyFilter): [Toy!]! @isAuthenticated
+  user(id: ID!): User! @isAuthenticated
+  users(filter: UserFilter): [User!]! @isAuthenticated
+}
+
+input PetCreateInput {
+  ownerId: ID
+  name: String
+  breed: String
+  createdAt: Int
+  updatedAt: Int
+  deletedAt: Int
+}
+
+input PetUpdateInput {
+  ownerId: ID
+  name: String
+  breed: String
+  createdAt: Int
+  updatedAt: Int
+  deletedAt: Int
+}
+
+input PetsCreateInput {
+  pets: [PetCreateInput!]!
+}
+
+type PetPayload {
+  pet: Pet!
+}
+
+type PetDeletePayload {
+  id: ID!
+}
+
+type PetsPayload {
+  pets: [Pet!]!
+}
+
+type PetsDeletePayload {
+  ids: [ID!]!
+}
+
+type PetsUpdatePayload {
+  ok: Boolean!
+}
+
+input ToyCreateInput {
+  description: String!
+  color: String
+  petId: ID
+  createdAt: Int
+  deletedAt: Int
+  updatedAt: Int
+}
+
+input ToyUpdateInput {
+  description: String
+  color: String
+  petId: ID
+  createdAt: Int
+  deletedAt: Int
+  updatedAt: Int
+}
+
+input ToysCreateInput {
+  toys: [ToyCreateInput!]!
+}
+
+type ToyPayload {
+  toy: Toy!
+}
+
+type ToyDeletePayload {
+  id: ID!
+}
+
+type ToysPayload {
+  toys: [Toy!]!
+}
+
+type ToysDeletePayload {
+  ids: [ID!]!
+}
+
+type ToysUpdatePayload {
+  ok: Boolean!
+}
+
+input UserCreateInput {
+  email: String!
+  name: String
+  password: String!
+  deletedAt: Int
+  createdAt: Int
+  updatedAt: Int
+}
+
+input UserUpdateInput {
+  email: String
+  name: String
+  password: String
+  deletedAt: Int
+  createdAt: Int
+  updatedAt: Int
+}
+
+input UsersCreateInput {
+  users: [UserCreateInput!]!
+}
+
+type UserPayload {
+  user: User!
+}
+
+type UserDeletePayload {
+  id: ID!
+}
+
+type UsersPayload {
+  users: [User!]!
+}
+
+type UsersDeletePayload {
+  ids: [ID!]!
+}
+
+type UsersUpdatePayload {
+  ok: Boolean!
+}
+
+type Mutation {
+  createPet(input: PetCreateInput!): PetPayload! @isAuthenticated
+  createPets(input: PetsCreateInput!): PetsPayload! @isAuthenticated
+  updatePet(id: ID!, input: PetUpdateInput!): PetPayload! @isAuthenticated
+  updatePets(filter: PetFilter, input: PetUpdateInput!): PetsUpdatePayload! @isAuthenticated
+  deletePet(id: ID!): PetDeletePayload! @isAuthenticated
+  deletePets(filter: PetFilter): PetsDeletePayload! @isAuthenticated
+  createToy(input: ToyCreateInput!): ToyPayload! @isAuthenticated
+  createToys(input: ToysCreateInput!): ToysPayload! @isAuthenticated
+  updateToy(id: ID!, input: ToyUpdateInput!): ToyPayload! @isAuthenticated
+  updateToys(filter: ToyFilter, input: ToyUpdateInput!): ToysUpdatePayload! @isAuthenticated
+  deleteToy(id: ID!): ToyDeletePayload! @isAuthenticated
+  deleteToys(filter: ToyFilter): ToysDeletePayload! @isAuthenticated
+  createUser(input: UserCreateInput!): UserPayload! @isAuthenticated
+  createUsers(input: UsersCreateInput!): UsersPayload! @isAuthenticated
+  updateUser(id: ID!, input: UserUpdateInput!): UserPayload! @isAuthenticated
+  updateUsers(filter: UserFilter, input: UserUpdateInput!): UsersUpdatePayload! @isAuthenticated
+  deleteUser(id: ID!): UserDeletePayload! @isAuthenticated
+  deleteUsers(filter: UserFilter): UsersDeletePayload! @isAuthenticated
+}

@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
+      - POSTGRES_DB=${DB_NAME:-gqlboil}
+      - POSTGRES_PORT=${DB_PORT:-5432}
+    volumes:
+      - ./gqlboil.sql:/docker-entrypoint-initdb.d/gqlboil.sql
+    ports:
+      - 5432:5432
